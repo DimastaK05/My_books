@@ -1,0 +1,32 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card mt-4">
+      <div class="card-header">
+        <h4 class="mb-0">Отметить книгу как прочитанную: <%= @book.title %></h4>
+      </div>
+      <div class="card-body">
+        <%= form_with model: [@book, @reading], local: true do |f| %>
+          <div class="mb-3">
+            <%= f.label :read_date, "Дата прочтения", class: "form-label" %>
+            <%= f.date_field :read_date, class: "form-control", value: Date.today %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :rating, "Оценка (1-5)", class: "form-label" %>
+            <%= f.select :rating, [1,2,3,4,5], { include_blank: "Без оценки" }, class: "form-select" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :note, "Заметка", class: "form-label" %>
+            <%= f.text_area :note, class: "form-control", rows: 3, placeholder: "Ваши впечатления о книге..." %>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <%= link_to "Отмена", @book, class: "btn btn-secondary" %>
+            <%= f.submit "Сохранить", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

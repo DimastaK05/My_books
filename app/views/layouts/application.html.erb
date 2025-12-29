@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <title>Мои книги - Личная библиотека</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+  <style>
+      body {
+          padding-top: 70px;
+          background-color: #f8f9fa;
+      }
+      .navbar-brand {
+          font-weight: bold;
+      }
+      .book-card {
+          transition: transform 0.2s;
+      }
+      .book-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+      .form-container {
+          max-width: 500px;
+          margin: 0 auto;
+          padding: 30px;
+          background: white;
+          border-radius: 10px;
+          box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      }
+      .welcome-section {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          padding: 80px 0;
+          border-radius: 10px;
+          margin-bottom: 40px;
+      }
+      .feature-icon {
+          width: 60px;
+          height: 60px;
+          background: rgba(255,255,255,0.2);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 20px;
+      }
+  </style>
+</head>
+
+<body>
+<!-- Навигация -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container">
+    <%= link_to '📚 Мои книги', root_path, class: 'navbar-brand' %>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <% if logged_in? %>
+          <li class="nav-item">
+            <%= link_to 'Мои книги', books_path, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'Добавить книгу', new_book_path, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'Жанры', genres_path, class: 'nav-link' %>
+          </li>
+        <% end %>
+      </ul>
+
+      <ul class="navbar-nav">
+        <% if logged_in? %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <%= current_user.name %>
+            </a>
+            <ul class="dropdown-menu">
+              <li><%= link_to 'Мой профиль', '#', class: 'dropdown-item' %></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><%= link_to 'Выйти', logout_path, method: :delete, class: 'dropdown-item' %></li>
+            </ul>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to 'Войти', login_path, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'Регистрация', signup_path, class: 'nav-link' %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Основной контент -->
+<div class="container">
+  <!-- Уведомления -->
+  <% if flash[:notice] %>
+    <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+      <%= flash[:notice] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  <% end %>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
+      <%= flash[:alert] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  <% end %>
+
+  <!-- Контент страницы -->
+  <%= yield %>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Простая анимация для карточек
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.book-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.cursor = 'pointer';
+            });
+        });
+    });
+</script>
+</body>
+</html>

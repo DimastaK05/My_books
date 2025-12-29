@@ -1,0 +1,45 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card mt-4">
+      <div class="card-header">
+        <h4 class="mb-0"><i class="bi bi-pencil"></i> Редактировать книгу</h4>
+      </div>
+      <div class="card-body">
+        <%= form_with model: @book, local: true do |f| %>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <%= f.label :title, "Название книги", class: "form-label" %>
+                <%= f.text_field :title, class: "form-control", required: true %>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="mb-3">
+                <%= f.label :author, "Автор", class: "form-label" %>
+                <%= f.text_field :author, class: "form-control", required: true %>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :genre_id, "Жанр", class: "form-label" %>
+            <%= f.select :genre_id,
+                         options_from_collection_for_select(@genres, :id, :name, @book.genre_id),
+                         { include_blank: "Выберите жанр..." },
+                         class: "form-select" %>
+            <div class="form-text">
+              Нет нужного жанра? <%= link_to "Создать новый жанр", new_genre_path %>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <%= link_to "Отмена", books_path, class: "btn btn-secondary" %>
+            <%= link_to "Просмотр", book_path(@book), class: "btn btn-info" %>
+            <%= f.submit "Обновить книгу", class: "btn btn-warning" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

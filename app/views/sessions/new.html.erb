@@ -1,0 +1,36 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="form-container mt-5">
+      <h2 class="text-center mb-4">Вход в систему</h2>
+
+      <%= form_with url: login_path, local: true do |f| %>
+        <div class="mb-3">
+          <%= f.label :email, "Email", class: "form-label" %>
+          <%= f.email_field :email, class: "form-control", placeholder: "ваш@email.com", required: true %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :password, "Пароль", class: "form-label" %>
+          <%= f.password_field :password, class: "form-control", placeholder: "Введите пароль", required: true %>
+        </div>
+
+        <div class="d-grid gap-2">
+          <%= f.submit "Войти", class: "btn btn-primary btn-lg" %>
+        </div>
+      <% end %>
+
+      <div class="text-center mt-3">
+        <p>Нет аккаунта? <%= link_to "Зарегистрироваться", signup_path %></p>
+      </div>
+
+      <hr class="my-4">
+
+      <!-- Демо-доступ -->
+      <div class="alert alert-info">
+        <h6><i class="bi bi-info-circle"></i> Демо-доступ:</h6>
+        <p class="mb-1">Email: <strong>demo@example.com</strong></p>
+        <p class="mb-0">Пароль: <strong>password</strong></p>
+      </div>
+    </div>
+  </div>
+</div>

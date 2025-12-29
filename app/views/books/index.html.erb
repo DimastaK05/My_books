@@ -1,0 +1,228 @@
+<% if logged_in? %>
+  <!-- Для авторизованных пользователей -->
+  <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+    <h1><i class="bi bi-book"></i> Мои книги</h1>
+    <%= link_to new_book_path, class: "btn btn-primary" do %>
+      <i class="bi bi-plus-circle"></i> Добавить книгу
+    <% end %>
+  </div>
+
+  <% if @books.any? %>
+    <!-- Фильтры -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <input type="text" class="form-control" id="searchBooks" placeholder="Поиск книг...">
+      </div>
+      <div class="col-md-3">
+        <select class="form-select" id="filterGenre">
+          <option value="">Все жанры</option>
+          <% current_user.genres.each do |genre| %>
+            <option value="<%= genre.name %>"><%= genre.name %></option>
+          <% end %>
+        </select>
+      </div>
+    </div>
+
+    <!-- Список книг -->
+    <div class="row" id="booksContainer">
+      <% @books.each do |book| %>
+        <div class="col-md-4 mb-4">
+          <div class="card book-card h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title"><%= book.title %></h5>
+                <% if book.genre %>
+                  <span class="badge bg-info"><%= book.genre.name %></span>
+                <% else %>
+                  <span class="badge bg-secondary">Без жанра</span>
+                <% end %>
+              </div>
+              <h6 class="card-subtitle mb-3 text-muted"><i class="bi bi-person"></i> <%= book.author %></h6>
+
+              <% if book.read? %>
+                <div class="mb-3">
+                  <span class="badge bg-success">
+                    <i class="bi bi-check-circle"></i> Прочитано
+                    <% if book.readings.any? && book.readings.last.rating %>
+                      <span class="ms-1">
+                        <% book.readings.last.rating.times do %>★<% end %>
+                      </span>
+                    <% end %>
+                  </span>
+                </div>
+              <% end %>
+
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <%= link_to book_path(book), class: "btn btn-sm btn-outline-primary" do %>
+                    <i class="bi bi-eye"></i> Подробнее
+                  <% end %>
+                  <%= link_to edit_book_path(book), class: "btn btn-sm btn-outline-warning" do %>
+                    <i class="bi bi-pencil"></i>
+                  <% end %>
+                </div>
+                <%= button_to book_path(book), method: :delete,
+                              class: "btn btn-sm btn-outline-danger",
+                              data: { confirm: "Удалить книгу '#{book.title}'?" } do %>
+                  <i class="bi bi-trash"></i>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <!-- Если книг нет -->
+    <div class="text-center py-5">
+      <div class="display-1 text-muted">
+        <i class="bi bi-book"></i>
+      </div>
+      <h3 class="mt-3">У вас пока нет книг</h3>
+      <p class="text-muted">Начните добавлять книги в свою библиотеку</p>
+      <%= link_to new_book_path, class: "btn btn-primary btn-lg" do %>
+        <i class="bi bi-plus-circle"></i> Добавить первую книгу
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- Статистика -->
+  <div class="row mt-5">
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h1 class="display-4"><%= @books.count %></h1>
+          <p class="text-muted">Всего книг</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h1 class="display-4"><%= @books.select(&:read?).count %></h1>
+          <p class="text-muted">Прочитано</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h1 class="display-4"><%= current_user.genres.count %></h1>
+          <p class="text-muted">Жанров</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h1 class="display-4"><%= Reading.where(book_id: current_user.book_ids).count %></h1>
+          <p class="text-muted">Отметок о чтении</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% else %>
+  <!-- Для гостей (главная страница) -->
+  <div class="welcome-section text-center">
+    <h1 class="display-4">Добро пожаловать в "Мои книги"!</h1>
+    <p class="lead">Удобная система для учета вашей личной библиотеки</p>
+    <div class="mt-4">
+      <%= link_to "Начать", signup_path, class: "btn btn-light btn-lg me-2" %>
+      <%= link_to "Войти", login_path, class: "btn btn-outline-light btn-lg" %>
+    </div>
+  </div>
+
+  <!-- Возможности -->
+  <h2 class="text-center mb-5">Что вы сможете делать?</h2>
+
+  <div class="row">
+    <div class="col-md-4 text-center mb-4">
+      <div class="feature-icon">
+        <i class="bi bi-book fs-3"></i>
+      </div>
+      <h4>Добавлять книги</h4>
+      <p>Ведите учет всех книг в своей библиотеке</p>
+    </div>
+
+    <div class="col-md-4 text-center mb-4">
+      <div class="feature-icon">
+        <i class="bi bi-tags fs-3"></i>
+      </div>
+      <h4>Сортировать по жанрам</h4>
+      <p>Создавайте свои жанры и категории</p>
+    </div>
+
+    <div class="col-md-4 text-center mb-4">
+      <div class="feature-icon">
+        <i class="bi bi-star fs-3"></i>
+      </div>
+      <h4>Ставить оценки</h4>
+      <p>Отмечайте прочитанные книги и ставьте оценки</p>
+    </div>
+  </div>
+
+  <!-- Демо скриншоты -->
+  <div class="row mt-5">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5>Для участника 1:</h5>
+          <ul>
+            <li>Регистрация и вход</li>
+            <li>Управление профилем</li>
+            <li>Аутентификация</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5>Для участника 2:</h5>
+          <ul>
+            <li>Добавление книг</li>
+            <li>Редактирование книг</li>
+            <li>Удаление книг</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<script>
+    // Простой поиск книг
+    document.getElementById('searchBooks').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const books = document.querySelectorAll('.book-card');
+
+        books.forEach(book => {
+            const title = book.querySelector('.card-title').textContent.toLowerCase();
+            const author = book.querySelector('.card-subtitle').textContent.toLowerCase();
+
+            if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                book.parentElement.style.display = 'block';
+            } else {
+                book.parentElement.style.display = 'none';
+            }
+        });
+    });
+
+    // Фильтр по жанрам
+    document.getElementById('filterGenre').addEventListener('change', function(e) {
+        const selectedGenre = e.target.value.toLowerCase();
+        const books = document.querySelectorAll('.book-card');
+
+        books.forEach(book => {
+            const genreBadge = book.querySelector('.badge.bg-info, .badge.bg-secondary');
+            const genreText = genreBadge ? genreBadge.textContent.toLowerCase() : '';
+
+            if (!selectedGenre || genreText === selectedGenre) {
+                book.parentElement.style.display = 'block';
+            } else {
+                book.parentElement.style.display = 'none';
+            }
+        });
+    });
+</script>

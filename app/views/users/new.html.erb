@@ -1,0 +1,37 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="form-container mt-5">
+      <h2 class="text-center mb-4">Создать аккаунт</h2>
+
+      <%= form_with model: @user, url: signup_path, local: true do |f| %>
+        <div class="mb-3">
+          <%= f.label :name, "Ваше имя", class: "form-label" %>
+          <%= f.text_field :name, class: "form-control", placeholder: "Иван Иванов", required: true %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :email, "Email", class: "form-label" %>
+          <%= f.email_field :email, class: "form-control", placeholder: "ваш@email.com", required: true %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :password, "Пароль", class: "form-label" %>
+          <%= f.password_field :password, class: "form-control", placeholder: "Не менее 6 символов", required: true %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :password_confirmation, "Подтверждение пароля", class: "form-label" %>
+          <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Повторите пароль", required: true %>
+        </div>
+
+        <div class="d-grid gap-2">
+          <%= f.submit "Зарегистрироваться", class: "btn btn-success btn-lg" %>
+        </div>
+      <% end %>
+
+      <div class="text-center mt-3">
+        <p>Уже есть аккаунт? <%= link_to "Войти в систему", login_path %></p>
+      </div>
+    </div>
+  </div>
+</div>

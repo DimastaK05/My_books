@@ -1,0 +1,159 @@
+<div class="row">
+  <div class="col-md-8">
+    <div class="card mt-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><%= @book.title %></h4>
+        <div>
+          <%= link_to edit_book_path(@book), class: "btn btn-sm btn-warning" do %>
+            <i class="bi bi-pencil"></i> Редактировать
+          <% end %>
+          <%= button_to book_path(@book), method: :delete,
+                        class: "btn btn-sm btn-danger",
+                        data: { confirm: "Удалить книгу '#{@book.title}'?" } do %>
+            <i class="bi bi-trash"></i> Удалить
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body text-center">
+                <% if @book.read? %>
+                  <i class="bi bi-bookmark-check display-1 text-success"></i>
+                  <p class="mt-2 text-success">Прочитано</p>
+                <% else %>
+                  <i class="bi bi-book display-1 text-primary"></i>
+                  <p class="mt-2 text-muted">В библиотеке</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <h5>Информация о книге</h5>
+            <table class="table">
+              <tr>
+                <th>Название:</th>
+                <td><%= @book.title %></td>
+              </tr>
+              <tr>
+                <th>Автор:</th>
+                <td><%= @book.author %></td>
+              </tr>
+              <tr>
+                <th>Жанр:</th>
+                <td>
+                  <% if @book.genre %>
+                    <span class="badge bg-info"><%= @book.genre.name %></span>
+                  <% else %>
+                    <span class="text-muted">Не указан</span>
+                  <% end %>
+                </td>
+              </tr>
+              <tr>
+                <th>Добавлена:</th>
+                <td><%= l(@book.created_at, format: :long) %></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Блок информации о прочтении -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0">Отметки о прочтении</h5>
+          </div>
+          <div class="card-body">
+            <% if @book.read? %>
+              <% @book.readings.order(read_date: :desc).each do |reading| %>
+                <div class="border-bottom pb-3 mb-3">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h6>Дата прочтения:</h6>
+                      <p><strong><%= reading.formatted_read_date %></strong></p>
+                    </div>
+                    <div class="col-md-4">
+                      <h6>Оценка:</h6>
+                      <% if reading.rating %>
+                        <div class="text-warning">
+                          <% reading.rating.times do %><i class="bi bi-star-fill"></i><% end %>
+                          <% (5 - reading.rating).times do %><i class="bi bi-star"></i><% end %>
+                          <span class="ms-2"><strong><%= reading.rating %>/5</strong></span>
+                        </div>
+                      <% else %>
+                        <p class="text-muted">Не оценена</p>
+                      <% end %>
+                    </div>
+                    <div class="col-md-4 text-end">
+                      <%= link_to "Редактировать", edit_book_reading_path(@book, reading), class: "btn btn-warning btn-sm me-1" %>
+                      <%= button_to "Удалить", book_reading_path(@book, reading),
+                                    method: :delete,
+                                    class: "btn btn-danger btn-sm",
+                                    data: { confirm: "Удалить отметку о прочтении?" } %>
+                    </div>
+                  </div>
+                  <% if reading.note.present? %>
+                    <div class="mt-2">
+                      <h6>Заметки:</h6>
+                      <div class="alert alert-light">
+                        <%= simple_format(reading.note) %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+
+              <div class="text-center mt-3">
+                <%= link_to "Добавить еще одну отметку о прочтении", new_book_reading_path(@book), class: "btn btn-outline-primary" %>
+              </div>
+
+            <% else %>
+              <div class="text-center py-3">
+                <i class="bi bi-bookmark display-1 text-muted"></i>
+                <h5 class="mt-3">Вы еще не читали эту книгу</h5>
+                <p class="text-muted">Отметьте книгу как прочитанную, чтобы добавить оценку и заметки</p>
+                <%= link_to "Отметить как прочитанную", new_book_reading_path(@book), class: "btn btn-success" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <h5>Действия</h5>
+          <div class="btn-group">
+            <%= link_to "Вернуться к списку", books_path, class: "btn btn-secondary" %>
+            <%= link_to "Редактировать книгу", edit_book_path(@book), class: "btn btn-warning" %>
+            <%= link_to "Добавить еще книгу", new_book_path, class: "btn btn-primary" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Информация</h5>
+      </div>
+      <div class="card-body">
+        <p>Здесь вы можете управлять информацией о книге.</p>
+        <ul class="list-unstyled">
+          <li><i class="bi bi-check-circle text-success"></i> Просмотр деталей</li>
+          <li><i class="bi bi-pencil text-warning"></i> Редактирование</li>
+          <li><i class="bi bi-bookmark text-primary"></i> Отметки о прочтении</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-lightning"></i> Быстрые действия</h5>
+      </div>
+      <div class="card-body">
+        <%= link_to "Добавить жанр", new_genre_path, class: "btn btn-outline-primary w-100 mb-2" %>
+        <%= link_to "Все книги", books_path, class: "btn btn-outline-secondary w-100 mb-2" %>
+        <%= link_to "Все жанры", genres_path, class: "btn btn-outline-info w-100" %>
+      </div>
+    </div>
+  </div>
+</div>
